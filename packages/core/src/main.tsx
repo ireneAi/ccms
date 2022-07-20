@@ -48,6 +48,7 @@ export interface CCMSProps  {
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
   loadDomain: (domain: string) => Promise<string>
+  loadCustomList?: () => Promise<Array<CustomListItem>>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   callback: (success: boolean) => void
   onMount?: () => void
@@ -74,6 +75,20 @@ export interface CCMSState {
  * - children: 子节点
  */
  export interface PageListItem {
+  key: string | number
+  value: string | number
+  title: string
+  children?: Array<PageListItem>
+}
+
+/**
+ * 自定义组件列表项
+ * - key: 此项必须设置（其值在整个树范围内唯一）
+ * - value: 默认根据此属性值进行筛选（其值在整个树范围内唯一）
+ * - title: 树节点显示的内容
+ * - children: 子节点
+ */
+ export interface CustomListItem {
   key: string | number
   value: string | number
   title: string
