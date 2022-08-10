@@ -278,18 +278,21 @@ export default class DetailImportSubformField
 
                 const FormField = this.getALLComponents(formFieldConfig.type) || Display
 
+                const computedColumns = {
+                  type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                  value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                  wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                  gap: config.columns?.gap || 0,
+                  rowGap: config.columns?.rowGap || 0
+                }
+                if (computedColumns.type === 'width') {
+                  computedColumns.value = `${config.childColumns?.value}${config.childColumns?.unit || ''}`
+                }
+
                 const renderData: IDetailItem = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
-                  columns: config.columns?.enable
-                    ? {
-                        type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                        value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
-                        wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                        gap: config.columns?.gap || 0,
-                        rowGap: config.columns?.rowGap || 0
-                      }
-                    : undefined,
+                  columns: config.columns?.enable ? computedColumns : undefined,
                   layout: formLayout,
                   visitable: display,
                   fieldType: formFieldConfig.type,

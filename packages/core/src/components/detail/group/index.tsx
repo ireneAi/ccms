@@ -182,17 +182,22 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
 
             const DetailFieldComponent = this.getALLComponents(detailFieldConfig.type) || DetailField
 
+            const computedColumns = {
+              type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
+              value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
+              wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+              gap: config.columns?.gap || 0,
+              rowGap: config.columns?.rowGap || 0
+            }
+            if (computedColumns.type === 'width') {
+              computedColumns.value = `${config.childColumns?.value}${config.childColumns?.unit || ''}`
+            }
+
             const renderData = {
               key: detailFieldIndex,
               label: detailFieldConfig.label,
               columns: config.columns?.enable
-                ? {
-                  type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                  value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
-                  wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                  gap: config.columns?.gap || 0,
-                  rowGap: config.columns?.rowGap || 0
-                }
+                ? computedColumns
                 : undefined,
               styles: detailFieldConfig.styles,
               layout: formLayout,

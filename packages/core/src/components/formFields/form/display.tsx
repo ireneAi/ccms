@@ -5,10 +5,12 @@ import { Display, FieldConfigs, DisplayProps } from '../common'
 import { getValue, setValue } from '../../../util/value'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
+import { ColumnsConfig } from '../../../interface'
 
 export interface IFormField {
   canCollapse?: boolean
   children: React.ReactNode[]
+  childColumns?: ColumnsConfig
 }
 
 export interface IFormFieldItem {
@@ -16,6 +18,7 @@ export interface IFormFieldItem {
   title: string
   canCollapse?: boolean
   children: React.ReactNode[]
+  columns?: ColumnsConfig
 }
 
 export interface IFormFieldItemField {
@@ -23,6 +26,7 @@ export interface IFormFieldItemField {
   label: string
   fieldType: string
   children: React.ReactNode
+  columns?: ColumnsConfig
 }
 
 interface FormState {

@@ -21,6 +21,9 @@ import OperationHelper, { OperationConfig } from '../../util/operation'
  * - * - * span: 固定分栏
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
+ * - * unit: 分栏宽度单位
+ * - * - * px: 像素
+ * - * - * %:  百分比
  * - * wrap: 分栏后是否换行
  * - * gap: 分栏边距
  * - fields: 表单项配置列表
@@ -433,8 +436,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
         options && options.noPathCombination
           ? path
           : formFieldConfig.field === '' || path === ''
-          ? `${formFieldConfig.field}${path}`
-          : `${formFieldConfig.field}.${path}`
+            ? `${formFieldConfig.field}${path}`
+            : `${formFieldConfig.field}.${path}`
 
       this.formValue = set(this.formValue, fullPath, value)
       this.setState(({ formValue }) => ({
@@ -475,8 +478,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
         options && options.noPathCombination
           ? path
           : formFieldConfig.field === '' || path === ''
-          ? `${formFieldConfig.field}${path}`
-          : `${formFieldConfig.field}.${path}`
+            ? `${formFieldConfig.field}${path}`
+            : `${formFieldConfig.field}.${path}`
 
       // unset(this.formValue, fullPath)
       this.formValue = set(this.formValue, fullPath)
@@ -516,8 +519,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
         options && options.noPathCombination
           ? path
           : formFieldConfig.field === '' || path === ''
-          ? `${formFieldConfig.field}${path}`
-          : `${formFieldConfig.field}.${path}`
+            ? `${formFieldConfig.field}${path}`
+            : `${formFieldConfig.field}.${path}`
 
       this.formValue = push(this.formValue, fullPath, value) // 向this.formValue的fullPath下的值添加value
       this.setState({
@@ -557,8 +560,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
         options && options.noPathCombination
           ? path
           : formFieldConfig.field === '' || path === ''
-          ? `${formFieldConfig.field}${path}`
-          : `${formFieldConfig.field}.${path}`
+            ? `${formFieldConfig.field}${path}`
+            : `${formFieldConfig.field}.${path}`
 
       this.formValue = splice(this.formValue, fullPath, index, count)
       this.setState({
@@ -598,8 +601,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
         options && options.noPathCombination
           ? path
           : formFieldConfig.field === '' || path === ''
-          ? `${formFieldConfig.field}${path}`
-          : `${formFieldConfig.field}.${path}`
+            ? `${formFieldConfig.field}${path}`
+            : `${formFieldConfig.field}.${path}`
 
       this.formValue = sort(this.formValue, fullPath, index, sortType)
       this.setState({
@@ -728,12 +731,12 @@ export default class FormStep extends Step<FormConfig, FormState> {
                   mode: actions[index].mode,
                   onClick: submitValidate
                     ? async () => {
-                        await this.handleValidations()
-                        console.info('表单参数信息', this.submitData, this.state.formValue, this.formData)
-                        if (this.canSubmit) {
-                          onClick()
-                        }
+                      await this.handleValidations()
+                      console.info('表单参数信息', this.submitData, this.state.formValue, this.formData)
+                      if (this.canSubmit) {
+                        onClick()
                       }
+                    }
                     : onClick
                 })
               }
@@ -815,19 +818,22 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 status = 'normal'
               }
 
+              const computedColumns = {
+                type: formFieldConfig.columns?.type || columns?.type || 'span',
+                value: formFieldConfig.columns?.value || columns?.value || 1,
+                wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
+                gap: columns?.gap || 0,
+                rowGap: columns?.rowGap || 0
+              }
+              if (computedColumns.type === 'width') {
+                computedColumns.value = `${columns?.value}${columns?.unit || ''}`
+              }
+
               const renderData = {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
                 subLabel: this.handleSubLabelContent(formFieldConfig),
-                columns: columns?.enable
-                  ? {
-                      type: formFieldConfig.columns?.type || columns?.type || 'span',
-                      value: formFieldConfig.columns?.value || columns?.value || 1,
-                      wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
-                      gap: columns?.gap || 0,
-                      rowGap: columns?.rowGap || 0
-                    }
-                  : undefined,
+                columns: columns?.enable ? computedColumns : undefined,
                 status,
                 message: formData[formFieldIndex]?.message || '',
                 extra: StatementHelper(formFieldConfig.extra, { data: this.props.data, step: formValue }),

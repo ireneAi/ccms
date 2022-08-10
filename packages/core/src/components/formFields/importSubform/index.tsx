@@ -507,20 +507,23 @@ export default class ImportSubformField
                   status = 'normal'
                 }
 
+                const computedColumns = {
+                  type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                  value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                  wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                  gap: config.columns?.gap || 0,
+                  rowGap: config.columns?.rowGap || 0
+                }
+                if (computedColumns.type === 'width') {
+                  computedColumns.value = `${config.childColumns?.value}${config.childColumns?.unit || ''}`
+                }
+
                 const renderData = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
                   subLabel: this.handleSubLabelContent(formFieldConfig),
                   status,
-                  columns: config.columns?.enable
-                    ? {
-                        type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                        value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
-                        wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                        gap: config.columns?.gap || 0,
-                        rowGap: config.columns?.rowGap || 0
-                      }
-                    : undefined,
+                  columns: config.columns?.enable ? computedColumns : undefined,
                   message: (this.state.formData[formFieldIndex] || {}).message || '',
                   extra: StatementHelper(
                     formFieldConfig.extra,

@@ -1,11 +1,11 @@
 import React from 'react'
+import { cloneDeep, get, set, unset } from 'lodash'
 import { DetailField, DetailFieldConfigs, DetailFieldError } from '../../components/detail/common'
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/detail'
 import { getValue, setValue } from '../../util/value'
 import { ColumnsConfig, ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
-import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper from '../../util/condition'
 
 /**
@@ -80,7 +80,7 @@ export interface IDetail {
  * - children:    详情项内容
  */
 export interface IDetailItem {
-  key: string | number,
+  key: string | number
   label: string
   layout: 'horizontal' | 'vertical'
   columns?: ColumnsConfig
@@ -109,10 +109,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
 
   // 各详情项所使用的UI组件的实例
   detailFields: Array<DetailField<DetailFieldConfigs, {}, any> | null> = []
+
   detailFieldsMounted: Array<boolean> = []
 
   detailValue: { [field: string]: any } = {}
-  detailData: { status: 'normal' | 'error' | 'loading', message?: string, name: string, hidden: boolean }[] = []
+
+  detailData: { status: 'normal' | 'error' | 'loading'; message?: string; name: string; hidden: boolean }[] = []
 
   /**
    * 初始化表单的值
@@ -132,9 +134,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
   stepPush = async () => {
     // 处理表单步骤配置文件的默认值
     const {
-      config: {
-        fields: detailFieldsConfig = []
-      },
+      config: { fields: detailFieldsConfig = [] },
       data,
       step,
       onMount
@@ -195,9 +195,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
    * 处理表单返回事件
    */
   handleCancel = async () => {
-    const {
-      onUnmount
-    } = this.props
+    const { onUnmount } = this.props
 
     onUnmount()
   }
@@ -222,10 +220,20 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     }
   }
 
-  handleValueSet = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+  handleValueSet = async (
+    detailFieldIndex: number,
+    path: string,
+    value: any,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : detailFieldConfig.field === '' || path === ''
+            ? `${detailFieldConfig.field}${path}`
+            : `${detailFieldConfig.field}.${path}`
 
       set(this.detailValue, fullPath, value)
       this.setState({
@@ -240,7 +248,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
   handleValueUnset = async (detailFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : detailFieldConfig.field === '' || path === ''
+            ? `${detailFieldConfig.field}${path}`
+            : `${detailFieldConfig.field}.${path}`
 
       unset(this.detailValue, fullPath)
       this.setState({
@@ -252,10 +265,20 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     }
   }
 
-  handleValueListAppend = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+  handleValueListAppend = async (
+    detailFieldIndex: number,
+    path: string,
+    value: any,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : detailFieldConfig.field === '' || path === ''
+            ? `${detailFieldConfig.field}${path}`
+            : `${detailFieldConfig.field}.${path}`
 
       const list = get(this.detailValue, fullPath, [])
       list.push(value)
@@ -269,10 +292,21 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     }
   }
 
-  handleValueListSplice = async (detailFieldIndex: number, path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => {
+  handleValueListSplice = async (
+    detailFieldIndex: number,
+    path: string,
+    index: number,
+    count: number,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : detailFieldConfig.field === '' || path === ''
+            ? `${detailFieldConfig.field}${path}`
+            : `${detailFieldConfig.field}.${path}`
 
       const list = get(this.detailValue, fullPath, [])
       list.splice(index, count)
@@ -292,9 +326,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
    * @param props
    */
   renderComponent = (props: IDetail) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Detail组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Detail组件。</>
   }
 
   /**
@@ -303,9 +335,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
    * @param props
    */
   renderItemComponent = (props: IDetailItem) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现DetailItem组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现DetailItem组件。</>
   }
 
   render() {
@@ -322,14 +352,11 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     const layout = this.props.config?.layout || 'vertical'
     const fields = this.props.config?.fields || []
 
-    const {
-      ready,
-      detailValue
-    } = this.state
+    const { ready, detailValue } = this.state
 
     if (ready) {
       return (
-        <React.Fragment>
+        <>
           {/* 渲染表单 */}
           {this.renderComponent({
             layout,
@@ -341,8 +368,8 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                 this.detailFieldsMounted[detailFieldIndex] = false
                 return null
               }
-              let hidden: boolean = true
-              let display: boolean = true
+              let hidden = true
+              let display = true
 
               // if (detailFieldConfig.type === 'hidden') {
               //   hidden = true
@@ -361,20 +388,23 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
 
               const DetailFieldComponent = this.getALLComponents(detailFieldConfig.type) || DetailField
 
+              const computedColumns = {
+                type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
+                value: detailFieldConfig.columns?.value || config.columns?.value || 1,
+                wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
+                gap: config.columns?.gap || 0,
+                rowGap: config.columns?.rowGap || 0
+              }
+              if (computedColumns.type === 'width') {
+                computedColumns.value = `${config.columns?.value}${config.columns?.unit || ''}`
+              }
+
               const renderData = {
                 key: detailFieldIndex,
                 label: detailFieldConfig.label,
                 // status: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).status || 'normal' : 'normal',
                 // message: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).message || '' : '',
-                columns: config.columns?.enable
-                  ? {
-                    type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
-                    value: detailFieldConfig.columns?.value || config.columns?.value || 1,
-                    wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
-                    gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
-                    rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
-                  }
-                  : undefined,
+                columns: config.columns?.enable ? computedColumns : undefined,
                 layout,
                 styles: detailFieldConfig.styles || {},
                 visitable: display,
@@ -396,34 +426,39 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                       }
                     }}
                     formLayout={layout}
-                    value={detailFieldConfig.field !== undefined ? getValue(detailValue, detailFieldConfig.field) || detailFieldConfig.defaultValue : undefined}
+                    value={
+                      detailFieldConfig.field !== undefined
+                        ? getValue(detailValue, detailFieldConfig.field) || detailFieldConfig.defaultValue
+                        : undefined
+                    }
                     record={detailValue}
                     step={cloneDeep(detailValue)}
                     data={cloneDeep(data)}
                     detail={this}
                     config={detailFieldConfig}
-                    onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
+                    onChange={async (value: any) => {
+                      await this.handleChange(detailFieldIndex, value)
+                    }}
                     onValueSet={async (path, value) => await this.handleValueSet(detailFieldIndex, path, value)}
                     onValueUnset={async (path) => await this.handleValueUnset(detailFieldIndex, path)}
-                    onValueListAppend={async (path, value) => await this.handleValueListAppend(detailFieldIndex, path, value)}
-                    onValueListSplice={async (path, index, count) => await this.handleValueListSplice(detailFieldIndex, path, index, count)}
+                    onValueListAppend={async (path, value) =>
+                      await this.handleValueListAppend(detailFieldIndex, path, value)
+                    }
+                    onValueListSplice={async (path, index, count) =>
+                      await this.handleValueListSplice(detailFieldIndex, path, index, count)
+                    }
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />
                 )
               }
               // 渲染详情项容器
-              return (
-                hidden
-                  ? this.renderItemComponent(renderData)
-                  : <React.Fragment key={detailFieldIndex}></React.Fragment>
-              )
+              return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={detailFieldIndex} />
             })
           })}
-        </React.Fragment>
+        </>
       )
-    } else {
-      return <></>
     }
+    return <></>
   }
 }
