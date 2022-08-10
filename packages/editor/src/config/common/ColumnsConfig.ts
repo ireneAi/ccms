@@ -65,11 +65,38 @@ const config: FieldConfigs[] = [
   },
   {
     "field": "value",
-    "label": "宽度(px/%)",
-    "type": "text",
-    "regExp": {
-      "expression": "^[0-9](px|%)$",
-      "message": "宽度需设置px或%"
+    "label": "宽度",
+    "type": "number",
+    "condition": {
+      "template": "${type} === 'width'",
+      "params": [
+        {
+          "field": "type",
+          "data": {
+            "source": "record",
+            "field": "type"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "field": "unit",
+    "label": "宽度单位",
+    "type": "select_single",
+    "mode": "button",
+    "options": {
+      "from": "manual",
+      "data": [
+        {
+          "value": "%",
+          "label": "百分比"
+        },
+        {
+          "value": "px",
+          "label": "像素"
+        }
+      ]
     },
     "condition": {
       "template": "${type} === 'width'",
