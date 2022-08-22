@@ -176,7 +176,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
     // @ts-ignore
     window.saveJson = window.setInterval(() => {
       this.saveJson(0)
-    }, 5 * 60 * 1000)
+    }, 10000)
 
     // 自动清除一周前的数据
     const historyText = localStorage.getItem(this.jsonStr)
@@ -194,6 +194,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
   }
 
   saveJson = (count: number) => {
+    console.log(count, 'savejson')
     // 最大尝试保存次数
     if (count > 60) {
       return
@@ -204,11 +205,10 @@ class App extends React.Component<AppProps, CCMSConsigState> {
       message.error({
         message: `localStorage剩余空间不足，请及时清理，当前已占用${size}kb`
       })
-      return
     }
 
     // 检查格式正确。不正确等一秒再重试
-    if (jsonlint) {
+    if (JSON.stringify(JSON.parse(this.jsonContent))) {
       try {
         this._saveLocal()
       } catch (e) {
@@ -222,8 +222,9 @@ class App extends React.Component<AppProps, CCMSConsigState> {
   getSizeSum = () => {
     let size = 0
     for (const item in window.localStorage) {
-      if (window.localStorage.hasOwnProperty(item)) {
-        size += window.localStorage.getItem(item).length
+      // eslint-disable-next-line no-prototype-builtins
+      if (item && window.localStorage.hasOwnProperty(item)) {
+        size += window.localStorage?.getItem(item)?.length || 0
       }
     }
     return size / 1024
@@ -231,8 +232,9 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
   // 缓存当前json数据
   _saveLocal = () => {
-    const { applicationName, menuId } = this.props
-    const jsonStr = JSON.stringify(JSON.parse(this.jsonText)) // 去回车换行
+    const { applicationName } = this.props
+    const { pageConfig } = this.state
+    const jsonStr = JSON.stringify(pageConfig) // 去回车换行
 
     let historyText = localStorage.getItem(this.jsonStr)
     if (historyText === null) {
@@ -249,11 +251,27 @@ class App extends React.Component<AppProps, CCMSConsigState> {
     historyList.push({
       time: new Date().getTime(),
       jsonStr,
-      application: applicationName,
-      menuId
+      application: applicationName
     })
 
-    localStorage.setItem(this.localKeyStr, JSON.stringify(historyList))
+    localStorage.setItem(this.jsonStr, JSON.stringify(historyList))
+  }
+
+  _getLocalData = () => {
+    const { applicationName } = this.props
+    const { pageConfig } = this.state
+    const jsonStr = JSON.stringify(pageConfig) // 去回车换行
+    const historyText = localStorage.getItem(this.jsonStr)
+    if (historyText !== null) {
+      const historyList = JSON.parse(historyText)
+      return historyList
+        .filter(function (data: any) {
+          return data.application === applicationName && data.jsonStr === jsonStr
+        })
+        .reverse()
+    } else {
+      return []
+    }
   }
 
   /**
@@ -858,3 +876,9 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 }
 
 export default App
+
+declare global {
+  interface Window {
+    saveJson: any
+  }
+}
